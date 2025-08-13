@@ -100,7 +100,7 @@ The data collection works by:
 ### 📦 Install via pip
 
 ```bash
-pip install -i https://test.pypi.org/simple/ vietlott-data==0.1.3
+pip install -i https://test.pypi.org/simple/ vietlott-data==0.1.4
 ```
 
 ### 💻 Command Line Interface
@@ -243,10 +243,10 @@ class ReadmeGenerator:
             return pd.DataFrame(data_stats).to_markdown(index=False)
         return "No data available"
 
-    def _generate_predictions_section(self, df: pd.DataFrame) -> str:
+    def _generate_predictions_section(self, df: pd.DataFrame, title: str) -> str:
         """Generate predictions analysis section."""
         if df.empty:
-            return "## 🔮 Prediction Models\n\n> No data available for predictions.\n"
+            return f"## 🔮 Prediction Models {title}\n\n> No data available for predictions.\n"
 
         try:
             ticket_per_days = 20
@@ -260,7 +260,7 @@ class ReadmeGenerator:
 
             cost_per_day = 10000 * ticket_per_days
 
-            return f"""## 🔮 Prediction Models
+            return f"""## 🔮 Prediction Models {title}
 
 > ⚠️ **Disclaimer**: These are experimental models for educational purposes only. Lottery outcomes are random and cannot be predicted reliably.
 
@@ -278,10 +278,10 @@ class ReadmeGenerator:
             logger.error(f"Error generating predictions: {e}")
             return "## 🔮 Prediction Models\n\n> Error generating prediction analysis.\n"
 
-    def _generate_power655_analysis(self, df: pd.DataFrame) -> str:
-        """Generate detailed Power 6/55 analysis section."""
+    def _generate_power655_analysis(self, df: pd.DataFrame, title: str) -> str:
+        """Generate detailed Power 6/45 or 6/55 analysis section."""
         if df.empty:
-            return "## 📈 Power 6/55 Analysis\n\n> No data available for analysis.\n"
+            return f"## 📈 Power {title} Analysis\n\n> No data available for analysis.\n"
 
         try:
             # Calculate stats for different periods
@@ -300,7 +300,7 @@ class ReadmeGenerator:
 
             recent_results = df.head(10)
 
-            return f"""## 📈 Power 6/55 Analysis
+            return f"""## 📈 Power {title} Analysis
 
 ### 📅 Recent Results (Last 10 draws)
 {recent_results.to_markdown(index=False)}
@@ -321,8 +321,8 @@ class ReadmeGenerator:
 
 """
         except Exception as e:
-            logger.error(f"Error generating Power 6/55 analysis: {e}")
-            return "## 📈 Power 6/55 Analysis\n\n> Error generating analysis.\n"
+            logger.error(f"Error generating Power {title} analysis: {e}")
+            return "## 📈 Power {title} Analysis\n\n> Error generating analysis.\n"
 
     # Removed Power 5/35 Analysis section as requested.
 
@@ -332,13 +332,20 @@ class ReadmeGenerator:
 
         # Load Power 6/55 data (main focus)
         df_power655 = self._load_lottery_data("power_655")
+        
+        # Load Power 6/45 data (main focus)
+        df_power645 = self._load_lottery_data("power_645")
 
         # Generate all sections
         header = self.templates.get_header()
         toc = self.templates.get_toc()
         data_overview = self._get_data_overview()
-        predictions = self._generate_predictions_section(df_power655)
-        power655_analysis = self._generate_power655_analysis(df_power655)
+        power655_predictions = self._generate_predictions_section(df_power655, "6/55")
+        power655_analysis = self._generate_power655_analysis(df_power655, "6/55")
+        
+        power645_predictions = self._generate_predictions_section(df_power645, "6/45")
+        power645_analysis = self._generate_power655_analysis(df_power645, "6/45")
+        
         how_it_works = self.templates.get_how_it_works()
         install_section = self.templates.get_install_section()
 
@@ -351,9 +358,13 @@ class ReadmeGenerator:
 
 {data_overview}
 
-{predictions}
+{power655_predictions}
 
 {power655_analysis}
+
+{power645_predictions}
+
+{power645_analysis}
 
 {how_it_works}
 
