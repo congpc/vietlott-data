@@ -12,6 +12,7 @@ from typing import Optional
 
 import pandas as pd
 from loguru import logger
+from collections import Counter
 
 from vietlott.config.products import get_config
 from vietlott.model.strategy.random_strategy import RandomModel
@@ -326,6 +327,39 @@ class ReadmeGenerator:
 
     # Removed Power 5/35 Analysis section as requested.
 
+    def _generate_odd_even_analysis(self, df: pd.DataFrame, product_name: str, days_ago: int = 0, num_balls: int = 6) -> str:
+        """Analyzes and formats the odd/even distribution of winning numbers."""
+        if df.empty:
+            return ""
+
+        odd_even_counts = Counter()
+
+        for _, row in df.iterrows():
+            numbers = row["result"]
+            main_numbers = numbers[:num_balls]
+            odd_count = sum(1 for num in main_numbers if num % 2 != 0)
+            even_count = len(main_numbers) - odd_count
+            odd_even_counts[(odd_count, even_count)] += 1
+
+        total_draws = len(df)
+        if not odd_even_counts or total_draws == 0:
+            return ""
+
+        table_content = []
+        table_content.append(f"| {'Split (Odd:Even)':<20} | {'Count':<10} | {'Ratio (%)':<10} |")
+        table_content.append(f"|:{'-'*20}-|:{'-'*10}-|:{'-'*10}-|")
+
+        for split, count in odd_even_counts.most_common():
+            ratio = (count / total_draws) * 100
+            split_str = f"{split[0]}:{split[1]}"
+            table_content.append(f"| {split_str:<20} | {count:<10} | {ratio:<9.2f} |")
+        days_ago_str = ""
+        if (days_ago > 0):
+          days_ago_str = f'Last {days_ago} Days' 
+        else:
+          days_ago_str = 'All Time'
+        return f"### ⚖️ [{product_name}] Odd vs. Even Analysis ({days_ago_str})\n" + "\n".join(table_content) + "\n"
+    
     def generate_readme(self) -> str:
         """Generate the complete README content."""
         logger.info("Starting README generation...")
@@ -335,16 +369,33 @@ class ReadmeGenerator:
         
         # Load Power 6/45 data (main focus)
         df_power645 = self._load_lottery_data("power_645")
-
+        
+        current_date = datetime.now().date()
+        df_power655_30d = df_power655[df_power655["date"] >= (current_date - timedelta(days=30))]
+        df_power655_60d = df_power655[df_power655["date"] >= (current_date - timedelta(days=60))]
+        df_power655_90d = df_power655[df_power655["date"] >= (current_date - timedelta(days=90))]
+        
+        df_power645_30d = df_power645[df_power645["date"] >= (current_date - timedelta(days=30))]
+        df_power645_60d = df_power645[df_power645["date"] >= (current_date - timedelta(days=60))]
+        df_power645_90d = df_power645[df_power645["date"] >= (current_date - timedelta(days=90))]
+        
         # Generate all sections
         header = self.templates.get_header()
         toc = self.templates.get_toc()
         data_overview = self._get_data_overview()
         power655_predictions = self._generate_predictions_section(df_power655, "6/55")
         power655_analysis = self._generate_power655_analysis(df_power655, "6/55")
+        power655_odd_even_analysis = self._generate_odd_even_analysis(df_power655, "6/55")
+        power655_odd_even_analysis_30d = self._generate_odd_even_analysis(df_power655_30d, "6/55", 30)
+        power655_odd_even_analysis_60d = self._generate_odd_even_analysis(df_power655_60d, "6/55", 60)
+        power655_odd_even_analysis_90d = self._generate_odd_even_analysis(df_power655_90d, "6/55", 90)
         
         power645_predictions = self._generate_predictions_section(df_power645, "6/45")
         power645_analysis = self._generate_power655_analysis(df_power645, "6/45")
+        power645_odd_even_analysis = self._generate_odd_even_analysis(df_power645, "6/45")
+        power645_odd_even_analysis_30d = self._generate_odd_even_analysis(df_power645_30d, "6/45", 30)
+        power645_odd_even_analysis_60d = self._generate_odd_even_analysis(df_power645_60d, "6/45", 60)
+        power645_odd_even_analysis_90d = self._generate_odd_even_analysis(df_power645_90d, "6/45", 90)
         
         how_it_works = self.templates.get_how_it_works()
         install_section = self.templates.get_install_section()
@@ -362,9 +413,19 @@ class ReadmeGenerator:
 
 {power655_analysis}
 
+{power655_odd_even_analysis}
+{power655_odd_even_analysis_30d}
+{power655_odd_even_analysis_60d}
+{power655_odd_even_analysis_90d}
+
 {power645_predictions}
 
 {power645_analysis}
+
+{power645_odd_even_analysis}
+{power645_odd_even_analysis_30d}
+{power645_odd_even_analysis_60d}
+{power645_odd_even_analysis_90d}
 
 {how_it_works}
 
