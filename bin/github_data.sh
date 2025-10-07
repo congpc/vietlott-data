@@ -36,6 +36,9 @@ python src/vietlott/cli/missing.py 3d_pro
 
 python src/render_readme.py
 
+# Generate prediction tickets
+./bin/prediction.sh
+
 #if [[ ! -d "$FOLDER" ]] ; then
 #  git clone $URL $FOLDER
 #fi

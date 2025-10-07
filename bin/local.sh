@@ -23,3 +23,5 @@ python src/vietlott/cli/crawl.py bingo18
 python src/vietlott/cli/missing.py bingo18
 
 python src/render_readme.py
+
+./bin/prediction.sh
