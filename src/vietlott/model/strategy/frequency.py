@@ -22,6 +22,7 @@ class FrequencyStrategy(PredictModel):
         lookback_days: int = 365,
         strategy_type: str = "hot",  # "hot", "cold", or "balanced"
         selection_weight: float = 0.8,
+        number_predict: int = 6
     ):
         """
         Initialize FrequencyStrategy.
@@ -35,7 +36,7 @@ class FrequencyStrategy(PredictModel):
             strategy_type: "hot" (favor frequent), "cold" (favor rare), "balanced" (mix)
             selection_weight: Weight for frequency-based selection vs random
         """
-        super().__init__(df, time_predict, min_val, max_val)
+        super().__init__(df, time_predict, min_val, max_val, number_predict)
         self.lookback_days = lookback_days
         self.strategy_type = strategy_type
         self.selection_weight = selection_weight
@@ -152,7 +153,16 @@ class FrequencyStrategy(PredictModel):
             else:
                 predicted.extend(available)
 
-        return sorted(predicted)
+        # return sorted(predicted)
+        
+        predict_nums = predicted
+        # Generate special number
+        if (self.isSpecialLot()):
+            if self.max_val == 35:
+                special_num = random.randint(self.min_val, PredictModel.POWER_535_MAX_SPECIAL_VAL)
+                predict_nums.append(special_num)
+                
+        return predict_nums
 
 
 class HotNumbersStrategy(FrequencyStrategy):

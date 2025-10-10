@@ -22,6 +22,7 @@ class PatternStrategy(PredictModel):
         max_val: int = PredictModel.POWER_655_MAX_VAL,
         lookback_days: int = 180,
         pattern_weight: float = 0.6,
+        number_predict: int = 6
     ):
         """
         Initialize PatternStrategy.
@@ -34,7 +35,7 @@ class PatternStrategy(PredictModel):
             lookback_days: Number of days to analyze for patterns
             pattern_weight: Weight for pattern-based selection vs random
         """
-        super().__init__(df, time_predict, min_val, max_val)
+        super().__init__(df, time_predict, min_val, max_val, number_predict)
         self.lookback_days = lookback_days
         self.pattern_weight = pattern_weight
         self._prepare_historical_data()
@@ -197,7 +198,8 @@ class PatternStrategy(PredictModel):
                 else:
                     break
 
-        return sorted(predicted)
+        # return sorted(predicted)
+        return predicted
 
     def predict(self, target_date: date) -> List[int]:
         """
@@ -235,4 +237,13 @@ class PatternStrategy(PredictModel):
             else:
                 predicted.extend(available)
 
-        return sorted(predicted[: self.number_predict])
+        # return sorted(predicted[: self.number_predict])
+        
+        predict_nums = predicted[:self.number_predict]
+        # Generate special number
+        if (self.isSpecialLot()):
+            if self.max_val == 35:
+                special_num = random.randint(self.min_val, PredictModel.POWER_535_MAX_SPECIAL_VAL)
+                predict_nums.append(special_num)
+                
+        return predict_nums

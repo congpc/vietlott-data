@@ -34,6 +34,25 @@ def load_sample_data(product: str):
         logger.error(f"Failed to load data: {e}")
         return None
 
+def _get_product_name(product: str):
+    return product.replace("_", "")
+
+def _get_max_val(product_name: str): 
+    max_val = 55
+    if product_name == "power645":
+        max_val = 45
+    elif product_name == "power535":
+        max_val = 35
+    return max_val
+
+def _get_number_predict(product_name: str): 
+    number_predict = 6
+    if product_name == "power535":
+        number_predict = 5
+    elif product_name == "power655":
+        number_predict = 7 # Include a special number at the end list number
+    return number_predict
+
 def _get_next_draw_date(product_name: str) -> str:
     """Calculates the next draw date for a given product based on the schedule."""
     lottery_schedule = {}
@@ -72,18 +91,21 @@ def demo_basic_predictions(product: str):
     # Get a sample date for prediction
     sample_date = df["date"].iloc[10]  # Use 10th most recent date
     logger.info(f"Making predictions for date: {sample_date}")
-
+    product_name = _get_product_name(product)
+    
     # Test different strategies
     strategies = [
-        ("Random", RandomModel(df, time_predict=3)),
-        ("NotRepeat", NotRepeatStrategy(df, lookback_days=30, avoid_weight=0.8)),
-        ("HotNumbers", HotNumbersStrategy(df, lookback_days=180)),
-        ("ColdNumbers", ColdNumbersStrategy(df, lookback_days=180)),
-        ("Pattern", PatternStrategy(df, lookback_days=90, pattern_weight=0.7)),
+        ("Random", RandomModel(df, time_predict=3, max_val=_get_max_val(product_name), number_predict=_get_number_predict(product_name))),
+        ("NotRepeat", NotRepeatStrategy(df, lookback_days=30, avoid_weight=0.8, max_val=_get_max_val(product_name), number_predict=_get_number_predict(product_name))),
+        ("HotNumbers", HotNumbersStrategy(df, lookback_days=180, max_val=_get_max_val(product_name), number_predict=_get_number_predict(product_name))),
+        ("ColdNumbers", ColdNumbersStrategy(df, lookback_days=180, max_val=_get_max_val(product_name), number_predict=_get_number_predict(product_name))),
+        ("Pattern", PatternStrategy(df, lookback_days=90, pattern_weight=0.7, max_val=_get_max_val(product_name), number_predict=_get_number_predict(product_name))),
     ]
 
     for name, strategy in strategies:
         try:
+            strategy.max_val = _get_max_val(product_name)
+            strategy.number_predict = _get_number_predict(product_name)
             predictions = strategy.predict(sample_date)
             logger.info(f"{name:12}: {predictions}")
         except Exception as e:
@@ -106,14 +128,15 @@ def demo_backtesting(product: str):
     start_date = end_date - timedelta(days=180)
 
     logger.info(f"Backtesting period: {start_date} to {end_date}")
-
+    product_name = _get_product_name(product)
+    
     # Test different strategies
     strategies_to_test = [
-        (RandomModel, {"time_predict": 1}),
-        (NotRepeatStrategy, {"lookback_days": 30, "avoid_weight": 0.7}),
-        (HotNumbersStrategy, {"lookback_days": 365}),
-        (ColdNumbersStrategy, {"lookback_days": 365}),
-        (PatternStrategy, {"lookback_days": 180, "pattern_weight": 0.6}),
+        (RandomModel, {"time_predict": 1, "max_val": _get_max_val(product_name), "number_predict": _get_number_predict(product_name)}),
+        (NotRepeatStrategy, {"lookback_days": 30, "avoid_weight": 0.7, "max_val": _get_max_val(product_name), "number_predict": _get_number_predict(product_name)}),
+        (HotNumbersStrategy, {"lookback_days": 365, "max_val": _get_max_val(product_name), "number_predict": _get_number_predict(product_name)}),
+        (ColdNumbersStrategy, {"lookback_days": 365, "max_val": _get_max_val(product_name), "number_predict": _get_number_predict(product_name)}),
+        (PatternStrategy, {"lookback_days": 180, "pattern_weight": 0.6, "max_val": _get_max_val(product_name), "number_predict": _get_number_predict(product_name)}),
     ]
 
     results = []
@@ -187,14 +210,15 @@ def demo_strategy_comparison(product: str):
     # Initialize backtester and comparator
     backtester = StrategyBacktester(df)
     comparator = StrategyComparator(backtester)
-
+    product_name = _get_product_name(product)
+    
     # Define strategies to compare with optimized parameters
     strategies_configs = [
-        (RandomModel, {"time_predict": 1}),
-        (NotRepeatStrategy, {"lookback_days": 30, "avoid_weight": 0.8}),
-        (FrequencyStrategy, {"lookback_days": 365, "strategy_type": "hot", "selection_weight": 0.7}),
-        (FrequencyStrategy, {"lookback_days": 365, "strategy_type": "cold", "selection_weight": 0.7}),
-        (PatternStrategy, {"lookback_days": 180, "pattern_weight": 0.6}),
+        (RandomModel, {"time_predict": 1, "max_val": _get_max_val(product_name), "number_predict": _get_number_predict(product_name)}),
+        (NotRepeatStrategy, {"lookback_days": 30, "avoid_weight": 0.8, "max_val": _get_max_val(product_name), "number_predict": _get_number_predict(product_name)}),
+        (FrequencyStrategy, {"lookback_days": 365, "strategy_type": "hot", "selection_weight": 0.7, "max_val": _get_max_val(product_name), "number_predict": _get_number_predict(product_name)}),
+        (FrequencyStrategy, {"lookback_days": 365, "strategy_type": "cold", "selection_weight": 0.7, "max_val": _get_max_val(product_name), "number_predict": _get_number_predict(product_name)}),
+        (PatternStrategy, {"lookback_days": 180, "pattern_weight": 0.6, "max_val": _get_max_val(product_name), "number_predict": _get_number_predict(product_name)}),
     ]
 
     # Define backtest period
@@ -226,9 +250,9 @@ def demo_strategy_comparison(product: str):
 
             # Generate and save report
             report = comparator.generate_report(results_df)
-            with open("strategy_comparison_report.txt", "w") as f:
+            with open(f"./data/prediction/result/strategy_comparison_report_{product_name}.txt", "w") as f:
                 f.write(report)
-            logger.info("Detailed report saved to 'strategy_comparison_report.txt'")
+            logger.info(f"Detailed report saved to 'strategy_comparison_report_{product_name}.txt'")
 
         else:
             logger.warning("No comparison results generated")
@@ -255,10 +279,13 @@ def demo_advanced_strategies(product: str):
         ("Cold-Heavy", {"strategy_type": "cold", "selection_weight": 0.9}),
         ("Balanced", {"strategy_type": "balanced", "selection_weight": 0.5}),
     ]
-
+    product_name = _get_product_name(product)
+    
     for name, params in configs:
         try:
             strategy = FrequencyStrategy(df, lookback_days=180, **params)
+            strategy.max_val = _get_max_val(product_name)
+            strategy.number_predict = _get_number_predict(product_name)
             predictions = strategy.predict(sample_date)
             logger.info(f"{name:12}: {predictions}")
         except Exception as e:
@@ -271,6 +298,8 @@ def demo_advanced_strategies(product: str):
     for weight in pattern_weights:
         try:
             strategy = PatternStrategy(df, pattern_weight=weight)
+            strategy.max_val = _get_max_val(product_name)
+            strategy.number_predict = _get_number_predict(product_name)
             predictions = strategy.predict(sample_date)
             logger.info(f"Weight {weight:3.1f}:    {predictions}")
         except Exception as e:
@@ -298,23 +327,23 @@ def _save_predictions(df_new_predictions: pd.DataFrame, file_path: str):
 def demo_export_predictions(product: str):
     """Demonstrate generating and exporting predictions with analysis."""
     logger.info("\n=== Demo: Exporting Predictions ===")
-    productName = product.replace("_", "")
+    product_name = _get_product_name(product)
 
     df = load_sample_data(product)
     if df is None:
         return
-
+          
     # Define strategies to generate predictions from
     strategies = [
-        ("Random", RandomModel(df, time_predict=10)),
-        ("NotRepeat", NotRepeatStrategy(df, lookback_days=30, avoid_weight=0.8)),
-        ("HotNumbers", HotNumbersStrategy(df, lookback_days=180)),
-        ("ColdNumbers", ColdNumbersStrategy(df, lookback_days=180)),
-        ("Pattern", PatternStrategy(df, lookback_days=90, pattern_weight=0.7)),
+        ("Random", RandomModel(df, time_predict=10, max_val=_get_max_val(product_name), number_predict=_get_number_predict(product_name))),
+        ("NotRepeat", NotRepeatStrategy(df, lookback_days=30, avoid_weight=0.8, max_val=_get_max_val(product_name), number_predict=_get_number_predict(product_name))),
+        ("HotNumbers", HotNumbersStrategy(df, lookback_days=180, max_val=_get_max_val(product_name), number_predict=_get_number_predict(product_name))),
+        ("ColdNumbers", ColdNumbersStrategy(df, lookback_days=180, max_val=_get_max_val(product_name), number_predict=_get_number_predict(product_name))),
+        ("Pattern", PatternStrategy(df, lookback_days=90, pattern_weight=0.7, max_val=_get_max_val(product_name), number_predict=_get_number_predict(product_name))),
     ]
 
-    next_draw_date = _get_next_draw_date(productName)
-    logger.info(f"Generating predictions for product '{productName}' for next draw on {next_draw_date}")
+    next_draw_date = _get_next_draw_date(product_name)
+    logger.info(f"Generating predictions for product '{product_name}' for next draw on {next_draw_date}")
 
     prediction_records = []
     unique_predictions_set = set()
@@ -322,8 +351,11 @@ def demo_export_predictions(product: str):
     for name, strategy in strategies:
         try:
             # Generate a few predictions from each strategy to get variety
+            strategy.max_val = _get_max_val(product_name)
+            strategy.number_predict = _get_number_predict(product_name)
             for _ in range(10): # Generate 10 tickets per strategy
-                prediction = tuple(sorted(strategy.predict(datetime.now().date())))
+                # prediction = tuple(sorted(strategy.predict(datetime.now().date())))
+                prediction = tuple(strategy.predict(datetime.now().date()))
                 if prediction not in unique_predictions_set:
                     unique_predictions_set.add(prediction)
                     ticket = list(prediction)
@@ -340,7 +372,7 @@ def demo_export_predictions(product: str):
     if prediction_records:
         df_predictions = pd.DataFrame(prediction_records)
         df_predictions = df_predictions.sort_values(by=["date", "strategy"], ascending=False)
-        output_path = f"./data/prediction/{productName}_prediction.jsonl"
+        output_path = f"./data/prediction/{product_name}_prediction.jsonl"
         _save_predictions(df_predictions, output_path)
 
 def main(product: str):

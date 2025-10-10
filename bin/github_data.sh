@@ -55,6 +55,5 @@ git config user.email "\'$EMAIl\'"
 git status
 git add $DATA_FOLDER
 git add readme.md
-git add strategy_comparison_report.txt
 git commit -m "update data @ `date +%Y-%m-%d\ %H:%M:%S`"
 git push github master

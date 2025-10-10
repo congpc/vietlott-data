@@ -21,6 +21,7 @@ class NotRepeatStrategy(PredictModel):
         max_val: int = PredictModel.POWER_655_MAX_VAL,
         lookback_days: int = 30,
         avoid_weight: float = 0.7,
+        number_predict: int = 6,
     ):
         """
         Initialize NotRepeatStrategy.
@@ -33,7 +34,7 @@ class NotRepeatStrategy(PredictModel):
             lookback_days: Number of days to look back for recent numbers
             avoid_weight: Probability of avoiding recently drawn numbers (0-1)
         """
-        super().__init__(df, time_predict, min_val, max_val)
+        super().__init__(df, time_predict, min_val, max_val, number_predict)
         self.lookback_days = lookback_days
         self.avoid_weight = avoid_weight
         self._prepare_historical_data()
@@ -114,4 +115,13 @@ class NotRepeatStrategy(PredictModel):
                 else:
                     break
 
-        return sorted(predicted)
+        # return sorted(predicted)
+        
+        predict_nums = predicted
+        # Generate special number
+        if (self.isSpecialLot()):
+            if self.max_val == 35:
+                special_num = random.randint(self.min_val, PredictModel.POWER_535_MAX_SPECIAL_VAL)
+                predict_nums.append(special_num)
+                
+        return predict_nums

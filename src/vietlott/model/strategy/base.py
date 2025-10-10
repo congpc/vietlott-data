@@ -4,6 +4,9 @@ import pandas as pd
 class PredictModel:
     POWER_655_MIN_VAL = 1
     POWER_655_MAX_VAL = 55  # assume we are using power655
+    POWER_645_MAX_VAL = 45  # assume we are using power645
+    POWER_535_MAX_VAL = 35  # assume we are using power535
+    POWER_535_MAX_SPECIAL_VAL = 12  # assume we are using power535
     number_predict = 6
     ticket_price = 10000
 
@@ -23,6 +26,7 @@ class PredictModel:
         time_predict: int = 1,
         min_val: int = POWER_655_MIN_VAL,
         max_val: int = POWER_655_MAX_VAL,
+        number_predict: int = 6,
     ):
         self.df = df
         self.df_backtest = None
@@ -31,6 +35,7 @@ class PredictModel:
         self.time_predict = time_predict
         self.min_val = min_val
         self.max_val = max_val
+        self.number_predict = number_predict
 
     @classmethod
     def _count_number(cls, number_series):
@@ -42,6 +47,11 @@ class PredictModel:
         l2_s = set(l2)
         inter = l1_s.intersection(l2_s)
         return len(inter) == len(l1), len(inter)
+
+    def isSpecialLot(self):
+        if (self.max_val == 55 and self.number_predict == 6) or (self.max_val == 35 and self.number_predict == 5):
+            return True
+        return False
 
     def predict(self, date):
         pass
