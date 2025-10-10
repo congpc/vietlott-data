@@ -4,7 +4,7 @@ Demo script showing how to use the lottery prediction strategies,
 backtesting, and parameter tuning systems.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 import argparse
 import pandas as pd
 from loguru import logger
@@ -22,8 +22,6 @@ from vietlott.model.strategy import (
 )
 import json
 
-lottery_schedule = {}
-
 def load_sample_data(product: str):
     """Load sample lottery data."""
     try:
@@ -36,21 +34,16 @@ def load_sample_data(product: str):
         logger.error(f"Failed to load data: {e}")
         return None
 
-def _load_lottery_schedule():
-    """Loads the lottery schedule from the JSON file."""
+def _get_next_draw_date(product_name: str) -> str:
+    """Calculates the next draw date for a given product based on the schedule."""
+    lottery_schedule = {}
     try:
         with open('./data/lottery_time.json', 'r') as f:
             lottery_schedule = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError) as e:
         logger.error(f"Could not load lottery schedule: {e}")
-        lottery_schedule = {}
-
-def _get_next_draw_date(product_name: str) -> str:
-    """Calculates the next draw date for a given product based on the schedule."""
+    
     schedule = lottery_schedule.get(product_name)
-    if not schedule:
-        return datetime.now().strftime("%Y-%m-%d")
-
     # Handle multi-time products like power535
     if "time" in schedule:
         now = datetime.now()
@@ -66,6 +59,7 @@ def _get_next_draw_date(product_name: str) -> str:
         next_day = now + timedelta(days=1)
         first_draw_time = draw_times[0]
         return next_day.strftime(f"%Y-%m-%d {first_draw_time.strftime('%H:%M')}")
+    return datetime.now().strftime("%Y-%m-%d")
     
 def demo_basic_predictions(product: str):
     """Demonstrate basic strategy predictions."""
@@ -352,7 +346,6 @@ def demo_export_predictions(product: str):
 def main(product: str):
     """Run all demonstrations."""
     logger.info(f"🎰 Vietlott Strategy Demo {product} Starting...")
-
     try:
         demo_basic_predictions(product)
         demo_backtesting(product)
@@ -368,7 +361,6 @@ def main(product: str):
         raise
 
 if __name__ == "__main__":
-    _load_lottery_schedule()
     parser = argparse.ArgumentParser(description="VietLott Strategies")
     parser.add_argument("--product", type=str, default="power_645", choices=["power_645", "power_655", "power_535"], help="The lottery product")
     args = parser.parse_args()
