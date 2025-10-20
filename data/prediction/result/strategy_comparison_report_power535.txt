@@ -1,43 +1,43 @@
 Strategy Comparison Report
 ==================================================
 
-Strategy: PatternStrategy
-Parameters: {'lookback_days': 180, 'pattern_weight': 0.6, 'max_val': 35, 'number_predict': 5}
-ROI: -10.53%
-Win Rate: 0.08%
-Avg Matches: 1.11
-Net Profit: -200,000 VND
-Total Predictions: 190
-------------------------------
-Strategy: FrequencyStrategy
-Parameters: {'lookback_days': 365, 'strategy_type': 'cold', 'selection_weight': 0.7, 'max_val': 35, 'number_predict': 5}
-ROI: -52.63%
-Win Rate: 0.05%
-Avg Matches: 0.94
-Net Profit: -1,000,000 VND
-Total Predictions: 190
-------------------------------
 Strategy: RandomModel
 Parameters: {'time_predict': 1, 'max_val': 35, 'number_predict': 5}
-ROI: -78.95%
+ROI: -57.94%
 Win Rate: 0.04%
-Avg Matches: 0.98
-Net Profit: -1,500,000 VND
-Total Predictions: 190
+Avg Matches: 1.06
+Net Profit: -1,240,000 VND
+Total Predictions: 214
+------------------------------
+Strategy: PatternStrategy
+Parameters: {'lookback_days': 180, 'pattern_weight': 0.6, 'max_val': 35, 'number_predict': 5}
+ROI: -60.28%
+Win Rate: 0.04%
+Avg Matches: 1.05
+Net Profit: -1,290,000 VND
+Total Predictions: 214
 ------------------------------
 Strategy: NotRepeatStrategy
 Parameters: {'lookback_days': 30, 'avoid_weight': 0.8, 'max_val': 35, 'number_predict': 5}
-ROI: -78.95%
-Win Rate: 0.04%
+ROI: -62.62%
+Win Rate: 0.03%
 Avg Matches: 0.99
-Net Profit: -1,500,000 VND
-Total Predictions: 190
+Net Profit: -1,340,000 VND
+Total Predictions: 214
+------------------------------
+Strategy: FrequencyStrategy
+Parameters: {'lookback_days': 365, 'strategy_type': 'cold', 'selection_weight': 0.7, 'max_val': 35, 'number_predict': 5}
+ROI: -71.96%
+Win Rate: 0.06%
+Avg Matches: 1.10
+Net Profit: -1,540,000 VND
+Total Predictions: 214
 ------------------------------
 Strategy: FrequencyStrategy
 Parameters: {'lookback_days': 365, 'strategy_type': 'hot', 'selection_weight': 0.7, 'max_val': 35, 'number_predict': 5}
-ROI: -78.95%
-Win Rate: 0.04%
-Avg Matches: 1.01
-Net Profit: -1,500,000 VND
-Total Predictions: 190
+ROI: -76.64%
+Win Rate: 0.05%
+Avg Matches: 1.05
+Net Profit: -1,640,000 VND
+Total Predictions: 214
 ------------------------------
