@@ -1,0 +1,43 @@
+Strategy Comparison Report
+==================================================
+
+Strategy: FrequencyStrategy
+Parameters: {'lookback_days': 365, 'strategy_type': 'hot', 'selection_weight': 0.7}
+ROI: -80.10%
+Win Rate: 0.04%
+Avg Matches: 0.88
+Net Profit: -1,610,000 VND
+Total Predictions: 201
+------------------------------
+Strategy: PatternStrategy
+Parameters: {'lookback_days': 180, 'pattern_weight': 0.6}
+ROI: -90.05%
+Win Rate: 0.02%
+Avg Matches: 0.84
+Net Profit: -1,810,000 VND
+Total Predictions: 201
+------------------------------
+Strategy: RandomModel
+Parameters: {'time_predict': 1}
+ROI: -95.02%
+Win Rate: 0.01%
+Avg Matches: 0.59
+Net Profit: -1,910,000 VND
+Total Predictions: 201
+------------------------------
+Strategy: FrequencyStrategy
+Parameters: {'lookback_days': 365, 'strategy_type': 'cold', 'selection_weight': 0.7}
+ROI: -95.02%
+Win Rate: 0.01%
+Avg Matches: 0.51
+Net Profit: -1,910,000 VND
+Total Predictions: 201
+------------------------------
+Strategy: NotRepeatStrategy
+Parameters: {'lookback_days': 30, 'avoid_weight': 0.8}
+ROI: -100.00%
+Win Rate: 0.00%
+Avg Matches: 0.06
+Net Profit: -2,010,000 VND
+Total Predictions: 201
+------------------------------
