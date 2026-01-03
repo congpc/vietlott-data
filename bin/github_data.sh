@@ -6,12 +6,12 @@ FOLDER=vietlott-data
 DATA_FOLDER=data
 USER="Cong Pham"
 EMAIl="chicong7891@gmail.com"
-VENV=".venv"
+#VENV=".venv"
 
 # Activate virtual environment if it exists
-if [ -n "$VENV" ]; then
-  source "$VENV/bin/activate"
-fi
+#if [ -n "$VENV" ]; then
+#  source "$VENV/bin/activate"
+#fi
 
 # generate data file
 echo "pwd $(pwd)"

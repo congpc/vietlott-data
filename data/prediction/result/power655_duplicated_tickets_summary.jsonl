@@ -1,1 +1,4 @@
+{"ticket_tuple":[1,19,24,28,47,49,51],"count":3,"strategies":["NotRepeat"],"dates":[1767398400000]}
+{"ticket_tuple":[1,17,19,24,28,47,51],"count":2,"strategies":["NotRepeat"],"dates":[1767398400000]}
+{"ticket_tuple":[1,17,19,24,28,49,51],"count":2,"strategies":["NotRepeat"],"dates":[1767398400000]}
 {"ticket_tuple":[4,6,10,32,47,48,54],"count":2,"strategies":["NotRepeat"],"dates":[1760918400000]}
