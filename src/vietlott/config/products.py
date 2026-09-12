@@ -21,7 +21,9 @@ class ProductConfig:
     use_cookies: bool = True
     default_index_to: int = 1
     page_size: int = 6
-
+    days_of_week: list[int] = attr.field(factory=lambda: [1, 2, 3, 4, 5, 6, 7])  # Default to all days of the week (1=Monday, 7=Sunday)
+    time_range: list[str] = [] # Optional time range for draws, e.g., ["18:00", "20:00"] for products like power_645 and power_655
+    time: list[str] = []  # Optional specific draw times, e.g., ["13:00", "21:00"] for products like power_535
 
 power655_config = ProductConfig(
     name="power_655",
@@ -31,6 +33,8 @@ power655_config = ProductConfig(
     size_output=6,
     interval=timedelta(days=2),
     use_cookies=False,
+    days_of_week=[1, 3, 5],  # Draws on Monday, Wednesday, Friday
+    time_range=["18:00", "20:00"],  # Draws between 6 PM and 8 PM
 )
 power645_config = ProductConfig(
     name="power_645",
@@ -40,6 +44,8 @@ power645_config = ProductConfig(
     size_output=6,
     interval=timedelta(days=2),
     use_cookies=False,
+    days_of_week=[2, 4, 6],  # Draws on Tuesday, Thursday, Saturday
+    time_range=["18:00", "18:30"]  # Draws between 6 PM and 6:30 PM
 )
 power535_config = ProductConfig(
     name="power_535",
@@ -49,6 +55,8 @@ power535_config = ProductConfig(
     size_output=5,
     interval=timedelta(days=2),
     use_cookies=False,
+    days_of_week=[1, 2, 3, 4, 5, 6, 7],  # Draws on all days of the week
+    time=["13:00", "21:00"]  # Draws at 1 PM and 9 PM
 )
 keno_config = ProductConfig(
     name="keno",

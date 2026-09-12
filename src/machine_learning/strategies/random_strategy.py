@@ -8,4 +8,4 @@ class RandomModel(PredictModel):
         nums = list(range(self.min_val, self.max_val + 1))
         random.shuffle(nums)
 
-        return sorted(nums[: PredictModel.number_predict])
+        return sorted(nums[: self.number_predict])

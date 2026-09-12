@@ -35,14 +35,14 @@ class PredictModel:
     col_*
         Column name constants used across backtest / evaluate DataFrames.
     """
-
+    name = "BaseModel"
+    
     POWER_655_MIN_VAL = 1
     POWER_655_MAX_VAL = 55  # assume we are using power655
     number_predict = 6
     ticket_price = 10000
 
     prices = {6: 40_000_000_000, 5: 5_000_000_000, 4: 500000, 3: 50000}
-
     col_date = "date"
     col_result = "result"
     col_predict = "predicted"
