@@ -10,7 +10,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from vietlott.config.map_class import map_class_name
-from vietlott.config.products import get_config
+from vietlott.config.productsV2 import get_config
 
 
 def test_bingo18_config():

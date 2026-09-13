@@ -6,7 +6,7 @@ import cattrs
 import polars as pl
 from loguru import logger
 
-from vietlott.config.products import get_config
+from vietlott.config.productsV2 import get_config
 from vietlott.crawler import collections_helper
 from vietlott.crawler.requests_helper import config as requests_config
 from vietlott.crawler.requests_helper import fetch

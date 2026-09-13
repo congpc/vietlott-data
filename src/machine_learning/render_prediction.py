@@ -25,7 +25,7 @@ from machine_learning.strategies import (
     RandomModel,
 )
 from machine_learning.strategies.base import PredictModel
-from vietlott.config.products import get_config
+from vietlott.config.productsV2 import get_config
 
 # (strategy_name, tickets_per_day, model_instance) after backtest+evaluate
 _StrategyEntry = Tuple[str, int, PredictModel]

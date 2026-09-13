@@ -12,7 +12,7 @@ from pathlib import Path
 import polars as pl
 from loguru import logger
 
-from vietlott.config.products import get_config
+from vietlott.config.productsV2 import get_config
 
 BLOG_POST_URL = "https://open.substack.com/pub/vietvudanh/p/minh-a-tao-repo-vietlott-data-the"
 BLOG_POST_BADGE = f"""

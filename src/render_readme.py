@@ -13,7 +13,7 @@ from typing import Optional
 import polars as pl
 from loguru import logger
 
-from vietlott.config.products import get_config
+from vietlott.config.productsV2 import get_config
 
 
 class ReadmeTemplates:

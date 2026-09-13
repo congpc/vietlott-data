@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Author: Cong Pham <chicong7891@gmail.com>
 """
 Script showing how to use the lottery prediction strategies.
 
@@ -10,7 +11,7 @@ from datetime import datetime
 from loguru import logger
 import argparse
 import polars as pl
-from vietlott.config.products import get_config
+from vietlott.config.productsV2 import get_config
 from machine_learning.strategies import RandomModel, PatternStrategy
 from utils import analyze_odd_even_counter, get_next_draw_date, save_predictions
 

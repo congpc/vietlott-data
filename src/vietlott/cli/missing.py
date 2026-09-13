@@ -7,7 +7,7 @@ from loguru import logger
 from tabulate import tabulate
 
 from vietlott.config.map_class import map_class_name
-from vietlott.config.products import ProductConfig, product_config_map
+from vietlott.config.productsV2 import ProductConfig, product_config_map
 from vietlott.crawler.products import BaseProduct
 
 
